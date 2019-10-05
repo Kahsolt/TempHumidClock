@@ -5,8 +5,9 @@
   Update Date: 2019/10/04
 */
 
-/* 针脚定义 */
-#define MG45_PIN A7  // 模拟脚:IN
+/* 针脚定义 
+#define MG45_PIN A7     // 模拟脚:IN
+*/
 
 float MG45_Analog_Value;
 
@@ -19,6 +20,7 @@ void MG45_Read() {
 }
 
 void MG45_Print() {
+  if (!SERIAL_ENABLE) return;
   Serial.print("[MG45] Analog Value: ");
   Serial.println(MG45_Analog_Value);
 }

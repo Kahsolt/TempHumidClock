@@ -2,10 +2,10 @@
   八段数码管
   Author: kahsolt
   Create Date: ?
-  Update Date: 2019/10/04
+  Update Date: 2019/10/05
 */
 
-/* 针脚定义 */
+/* 针脚定义 
 #define W1 A5
 #define W2 A2
 #define W3 A1
@@ -18,9 +18,10 @@
 #define f A3
 #define g 11
 #define dp 9
-#define TUBE_REFRESH_INTERVAL 5
-#define TUBE_CONTROL_PIN_NUM 4
-#define TUBE_LED_PIN_NUM 8
+*/
+
+#define TUBE_CONTROL_PIN_NUM   4
+#define TUBE_LED_PIN_NUM       8
 
 int Tube_Control_Pins[] = { W1, W2, W3, W4 };
 int Tube_LED_Pins[] = { a, b, c, d, e, f, g, dp };
@@ -60,21 +61,27 @@ void Tube_Write(int idx, int n) {
 }
 
 void Tube_Display(int data[], float seconds) {
-  long minisec = int(seconds * 1000);
-  while (minisec > 0)
-    for (int i = 0; i < TUBE_CONTROL_PIN_NUM && minisec > 0; i++) {
+  int ttl = (unsigned int) (seconds * 1000);
+  unsigned int timeclip = (unsigned int) (1000.0 / TUBE_REFRESH_RATE / TUBE_CONTROL_PIN_NUM);
+  unsigned int tc_on = (unsigned int) (timeclip * TUBE_BRIGHTNESS);
+  unsigned int tc_off = timeclip - tc_off;
+
+  while (ttl > 0)
+    for (int i = 0; i < TUBE_CONTROL_PIN_NUM && ttl > 0; i++) {
       Tube_Write(i, data[i]);
-      delay(TUBE_REFRESH_INTERVAL);
-      minisec -= TUBE_REFRESH_INTERVAL;
+      delay(tc_on);
+      Tube_Off();
+      delay(tc_off);
+      ttl -= timeclip;
     }
 }
 
 void Tube_Test() {
-  int temp[4] = { 3, 7, 10, 11 };
-  Tube_Display(temp, 2.5);
+  int temp[4] = { 9, 9, 10, 11 };
+  Tube_Display(temp, 1);
   Tube_Off();
 
-  int hum[4] = { 5, 6, 10, 12 };
-  Tube_Display(hum, 2.5);
+  int hum[4] = { 9, 9, 10, 12 };
+  Tube_Display(hum, 1);
   Tube_Off();
 }

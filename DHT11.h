@@ -5,14 +5,14 @@
   Update Date: 2019/10/04
 */
 
-/* 针脚定义 */
+/* 针脚定义 
 #define DHT11_PIN 13        // 数字脚:IN+OUT
+*/
 
 int DHT11_Temperature;      // 温度
 int DHT11_Humidity;         // 湿度
 int DHT11_Checksum;         // 校验码
 int DHT11_Data[40] = { 0 }; // 存放40个bit数据
-
 
 void DHT11_Init() {
   pinMode(DHT11_PIN, INPUT_PULLUP);
@@ -43,7 +43,7 @@ boolean DHT11_Wakeup() {
 
 void DHT11_Read() {
   if (!DHT11_Wakeup()) {
-    Serial.println("[DHT11] fail to wakeup");
+    if (SERIAL_ENABLE) Serial.println("[DHT11] fail to wakeup");
     return;
   }
 
@@ -68,10 +68,11 @@ void DHT11_Read() {
   }
 
   if (DHT11_Humidity + DHT11_Temperature != DHT11_Checksum)
-    Serial.print("[DHT11] data checksum mismatch");
+    if (SERIAL_ENABLE) Serial.print("[DHT11] data checksum mismatch");
 }
 
 void DHT11_Print() {
+  if (!SERIAL_ENABLE) return;
   Serial.print("[DHT11] Temperature: ");
   Serial.print(DHT11_Temperature);
   Serial.print("°C    ");

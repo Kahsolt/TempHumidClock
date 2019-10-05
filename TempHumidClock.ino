@@ -1,31 +1,31 @@
+#include "config.h"
 #include "MG45.h"
 #include "DHT11.h"
 #include "DigitalTube.h"
 
-#define DISPLAY_TIME 15
-
 void setup() {
-  Serial.begin(9600);
-
+  Serial.begin(SERIAL_BAUDRATE);
+  
+  Tube_Init();
   MG45_Init();
   DHT11_Init();
-  Tube_Init();
-
-  MG45_Read(); MG45_Print();
-  Serial.println("[App] MG45 test OK");
-
-  DHT11_Read(); DHT11_Print();
-  Serial.println("[App] DHT11 test OK");
 
   Tube_Test();
   Serial.println("[App] Tube test OK");
+  
+  MG45_Read(); MG45_Print();
+  Serial.println("[App] MG45 test OK");
+
+  DHT11_Read(); /* dummy for init */
+  DHT11_Read(); DHT11_Print();
+  Serial.println("[App] DHT11 test OK");
 }
 
 void loop() {
   int data[TUBE_CONTROL_PIN_NUM];
   
   MG45_Read(); MG45_Print();
-  if (MG45_Analog_Value > 400.0) {
+  if (MG45_Analog_Value > MG45_THRESHOLD) {
     Tube_Off();
     delay(1000);
   } else {
